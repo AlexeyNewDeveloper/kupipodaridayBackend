@@ -6,19 +6,15 @@ import { UsersModule } from './users/users.module';
 import { WishesModule } from './wishes/wishes.module';
 import { WishlistsModule } from './wishlists/wishlists.module';
 import { OffersModule } from './offers/offers.module';
+import { User } from './users/entities/user.entity';
+import { Wish } from './wishes/entities/wish.entity';
+import { Wishlist } from './wishlists/entities/wishlist.entity';
+import { Offer } from './offers/entities/offer.entity';
+import AppDataSource from './data-source'
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'student',
-      password: 'student',
-      database: 'nest_project',
-      entities: ['src/**/entities/*.entity{.ts,.js}'],
-      synchronize: false,
-    }),
+    TypeOrmModule.forFeature([User, Wish, Wishlist, Offer], AppDataSource.PostgresDataSource),
     UsersModule,
     WishesModule,
     WishlistsModule,

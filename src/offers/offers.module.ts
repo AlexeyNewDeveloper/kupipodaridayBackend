@@ -4,6 +4,7 @@ import { OffersController } from './offers.controller';
 
 @Module({
   controllers: [OffersController],
-  providers: [OffersService]
+  providers: [OffersService],
+  exports: [OffersService]
 })
-export class OffersModule {}
+export class OffersModule { }

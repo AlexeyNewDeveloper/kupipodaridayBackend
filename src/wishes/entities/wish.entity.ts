@@ -1,7 +1,67 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { BaseEntity } from 'src/base-entities/base-entity';
+import { IsString, IsUrl, Length, IsNumber, IsArray, Min } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
+import { Offer } from 'src/offers/entities/offer.entity';
 
 @Entity()
 export class Wish extends BaseEntity {
+    @IsString()
+    @Length(1, 250)
+    @Column({
+        type: "varchar",
+        length: 250,
+    })
+    name: string
 
+    @IsUrl()
+    @IsString()
+    @Column({
+        type: "text",
+    })
+    link: string;
+
+    @IsUrl()
+    @IsString()
+    @Column({
+        type: "text",
+    })
+    image: string;
+
+    @IsNumber()
+    @Min(1)
+    @Column({
+        type: "numeric",
+    })
+    price: number;
+
+    @IsNumber()
+    @Min(1)
+    @Column({
+        type: "numeric",
+    })
+    raised: number;
+
+    @ManyToOne(() => User, (user) => user.wishes)
+    @Column()
+    owner: User;
+
+    @IsString()
+    @Length(1, 1024)
+    @Column({
+        type: "varchar",
+        length: 1024,
+    })
+    description: string
+
+    @ManyToOne(() => Offer, offer => offer.item)
+    @IsArray()
+    @Column()
+    items: Offer[]
+
+    @IsNumber()
+    @Column({
+        type: "integer",
+    })
+    copied: number;
 }

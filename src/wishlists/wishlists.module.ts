@@ -5,6 +5,6 @@ import { WishlistsController } from './wishlists.controller';
 @Module({
   controllers: [WishlistsController],
   providers: [WishlistsService],
+  exports: [WishlistsService]
 })
-// eslint-disable-next-line prettier/prettier
 export class WishlistsModule { }
