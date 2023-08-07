@@ -5,6 +5,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 
+type FindOneParamsObject =
+  { id: number }
+  | { username: string }
+
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -20,8 +25,8 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async findOne(id: number) {
-    return this.userRepository.findOneBy({ id });
+  async findOne(paramsObject: FindOneParamsObject) {
+    return this.userRepository.findOneBy(paramsObject);
   }
 
   async updateOne(id: number, updateUserDto: UpdateUserDto) {

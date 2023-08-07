@@ -5,7 +5,7 @@ import { UpdateOfferDto } from './dto/update-offer.dto';
 
 @Controller('offers')
 export class OffersController {
-  constructor(private readonly offersService: OffersService) {}
+  constructor(private readonly offersService: OffersService) { }
 
   @Post()
   create(@Body() createOfferDto: CreateOfferDto) {
@@ -24,11 +24,11 @@ export class OffersController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOfferDto: UpdateOfferDto) {
-    return this.offersService.update(+id, updateOfferDto);
+    return this.offersService.updateOne(+id, updateOfferDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.offersService.remove(+id);
+    return this.offersService.removeOne(+id);
   }
 }

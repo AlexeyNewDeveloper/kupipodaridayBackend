@@ -5,7 +5,7 @@ import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 
 @Controller('wishlists')
 export class WishlistsController {
-  constructor(private readonly wishlistsService: WishlistsService) {}
+  constructor(private readonly wishlistsService: WishlistsService) { }
 
   @Post()
   create(@Body() createWishlistDto: CreateWishlistDto) {
@@ -24,11 +24,11 @@ export class WishlistsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateWishlistDto: UpdateWishlistDto) {
-    return this.wishlistsService.update(+id, updateWishlistDto);
+    return this.wishlistsService.updateOne(+id, updateWishlistDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.wishlistsService.remove(+id);
+    return this.wishlistsService.removeOne(+id);
   }
 }
