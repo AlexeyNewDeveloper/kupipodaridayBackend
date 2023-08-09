@@ -1,21 +1,43 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { WishesService } from './wishes.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt/jwt-auth.guard';
 
 @Controller('wishes')
 export class WishesController {
   constructor(private readonly wishesService: WishesService) { }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createWishDto: CreateWishDto) {
     return this.wishesService.create(createWishDto);
   }
 
-  @Get()
-  findAll() {
-    return this.wishesService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Get('last')
+  findLast() {
+    return this.wishesService.findAll({
+      order: {
+        id: 'DESC'
+      },
+      skip: 0,
+      take: 20
+    });
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('last')
+  findTop() {
+    return this.wishesService.findAll({
+      order: {
+        id: 'ASC'
+      },
+      skip: 0,
+      take: 20
+    });
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {

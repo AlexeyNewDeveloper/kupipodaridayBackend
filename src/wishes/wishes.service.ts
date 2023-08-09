@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class WishesService {
   constructor(
-    @InjectRepository(User)
+    @InjectRepository(Wish)
     private wishesRepository: Repository<Wish>,
   ) { }
 
@@ -22,7 +22,9 @@ export class WishesService {
   }
 
   async findOne(id: number) {
-    return this.wishesRepository.findOneBy({ id });
+    return this.wishesRepository.findOne({
+      where: { id },
+    });
   }
 
   async updateOne(id: number, updateWishDto: UpdateWishDto) {

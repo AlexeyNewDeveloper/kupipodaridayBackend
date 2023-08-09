@@ -14,7 +14,7 @@ const PostgresDataSource = new DataSource({
     password: 'student',
     database: 'nest_project',
     entities: [User, Wish, Wishlist, Offer],
-    synchronize: false,
+    synchronize: true,
 })
 
 PostgresDataSource.initialize()
