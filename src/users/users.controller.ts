@@ -1,34 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt/jwt-auth.guard';
+import { FindUserDto } from './dto/find-users.dto';
+import { HashService } from 'src/hash/hash.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly hashService: HashService
+  ) { }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getSelfProfile(@Request() req) {
+    return this.usersService.getUserProfile({ id: req.user.id })
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  async updateSelfProfile(@Request() req, @Body() updateUserDto: UpdateUserDto) {
+    let hashedPassword: string;
+    if (updateUserDto.password) {
+      hashedPassword = await this.hashService.hash(updateUserDto.password);
+      updateUserDto.password = hashedPassword;
+    }
+    return this.usersService.updateOne(req.user.id, updateUserDto)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @UseGuards(JwtAuthGuard)
+  @Get('me/wishes')
+  async getOwnWishes(@Request() req) {
+    return this.usersService.getOwnWishes({ id: req.user.id })
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateOne(+id, updateUserDto);
+  @UseGuards(JwtAuthGuard)
+  @Get(':username')
+  async getPublicUserProfileByUsername(@Param() username: string) {
+    return this.usersService.getPublicUserProfileByUsername(username)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.removeOne(+id);
+  @UseGuards(JwtAuthGuard)
+  @Get(':username/wishes')
+  async getPublicUserWishesByUsername(@Param() username: string) {
+    return this.usersService.getPublicUserWishesByUsername({ username })
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('find')
+  async findUser(@Body() reqBody: FindUserDto) {
+    return this.usersService.findAll(reqBody.query)
   }
 }
