@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { WishesService } from './wishes.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
@@ -10,7 +10,7 @@ export class WishesController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createWishDto: CreateWishDto) {
+  create(@Request() req, @Body() createWishDto: CreateWishDto) {
     return this.wishesService.create(createWishDto);
   }
 
@@ -27,7 +27,7 @@ export class WishesController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('last')
+  @Get('top')
   findTop() {
     return this.wishesService.findAll({
       order: {
@@ -39,18 +39,39 @@ export class WishesController {
   }
 
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.wishesService.findOne(+id);
+  getWish(@Param('id') id: string) {
+    return this.wishesService.findOne({
+      where: { id: +id },
+    });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWishDto: UpdateWishDto) {
-    return this.wishesService.updateOne(+id, updateWishDto);
+  updateWish(@Request() req, @Param('id') id: string, @Body() updateWishDto: UpdateWishDto) {
+    return this.wishesService.updateOne({ id: +id, owner: req.user }, updateWishDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.wishesService.removeOne(+id);
+  remove(@Request() req, @Param('id') id: string) {
+    return this.wishesService.removeOne({ id: +id, owner: req.user });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/copy')
+  async copyWish(@Request() req, @Param('id') id: string) {
+    const wish = await this.wishesService.findOne({
+      where: { id: +id },
+      select: {
+        name: true,
+        link: true,
+        image: true,
+        price: true,
+        description: true
+      }
+    });
+    return this.wishesService.create(wish);
   }
 }

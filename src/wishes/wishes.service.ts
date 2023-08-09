@@ -17,21 +17,19 @@ export class WishesService {
     return this.wishesRepository.save(createWishDto);
   }
 
-  async findAll(): Promise<Wish[]> {
-    return this.wishesRepository.find();
+  async findAll(params): Promise<Wish[]> {
+    return this.wishesRepository.find(params);
   }
 
-  async findOne(id: number) {
-    return this.wishesRepository.findOne({
-      where: { id },
-    });
+  async findOne(params) {
+    return this.wishesRepository.findOne(params);
   }
 
-  async updateOne(id: number, updateWishDto: UpdateWishDto) {
-    return this.wishesRepository.update(id, updateWishDto);
+  async updateOne(params, updateWishDto: UpdateWishDto) {
+    return this.wishesRepository.update(params, updateWishDto);
   }
 
-  async removeOne(id: number) {
-    return this.wishesRepository.delete(id);
+  async removeOne(params) {
+    return this.wishesRepository.delete(params);
   }
 }
