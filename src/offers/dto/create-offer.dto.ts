@@ -1,12 +1,12 @@
-import { IsBoolean, IsNumber } from "class-validator";
+import { IsBoolean, IsNumber, Min } from "class-validator";
 import { User } from "src/users/entities/user.entity";
 import { Wish } from "src/wishes/entities/wish.entity";
 
 export class CreateOfferDto {
-    user: User
+    @IsNumber()
+    itemId: number;
 
-    item: Wish;
-
+    @Min(1)
     @IsNumber()
     amount: number;
 
