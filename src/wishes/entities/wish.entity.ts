@@ -39,6 +39,7 @@ export class Wish extends BaseEntity {
     @Min(1)
     @Column({
         type: "numeric",
+        default: 0
     })
     raised: number;
 

@@ -1,13 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { WishlistsService } from './wishlists.service';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt/jwt-auth.guard';
-
+import { UsersService } from 'src/users/users.service';
 
 @Controller('wishlists')
 export class WishlistsController {
-  constructor(private readonly wishlistsService: WishlistsService) { }
+  constructor(
+    private readonly wishlistsService: WishlistsService,
+    private readonly usersService: UsersService,
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -28,13 +31,23 @@ export class WishlistsController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWishlistDto: UpdateWishlistDto) {
-    return this.wishlistsService.updateOne(+id, updateWishlistDto);
+  async update(@Request() req, @Param('id') id: string, @Body() updateWishlistDto: UpdateWishlistDto) {
+    const user = await this.usersService.findOne({
+      where: {
+        id: req.user.id
+      }
+    })
+    return this.wishlistsService.updateOne({ id: +id, owner: user }, updateWishlistDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.wishlistsService.removeOne(+id);
+  async remove(@Request() req, @Param('id') id: string) {
+    const user = await this.usersService.findOne({
+      where: {
+        id: req.user.id
+      }
+    })
+    return this.wishlistsService.removeOne({ id: +id, owner: user });
   }
 }

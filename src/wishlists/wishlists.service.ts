@@ -3,7 +3,7 @@ import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { Wishlist } from './entities/wishlist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class WishlistsService {
@@ -24,12 +24,12 @@ export class WishlistsService {
     return this.wishlistRepository.findOneBy({ id });
   }
 
-  async updateOne(id: number, updateUserDto: UpdateWishlistDto) {
-    return this.wishlistRepository.update(id, updateUserDto);
+  async updateOne(paramsObject: FindOptionsWhere<Wishlist>, updateUserDto: UpdateWishlistDto) {
+    return this.wishlistRepository.update(paramsObject, updateUserDto);
   }
 
-  async removeOne(id: number) {
-    return this.wishlistRepository.delete(id);
+  async removeOne(paramsObject: FindOptionsWhere<Wishlist>) {
+    return this.wishlistRepository.delete(paramsObject);
   }
 
 }

@@ -24,11 +24,11 @@ export class OffersService {
     return this.offerRepository.findOneBy({ id });
   }
 
-  async updateOne(id: number, updateOfferDto: UpdateOfferDto) {
-    return this.offerRepository.update(id, updateOfferDto);
-  }
+  // async updateOne(id: number, updateOfferDto: UpdateOfferDto) {
+  //   return this.offerRepository.update(id, updateOfferDto);
+  // }
 
-  async removeOne(id: number) {
-    return this.offerRepository.delete(id);
-  }
+  // async removeOne(id: number) {
+  //   return this.offerRepository.delete(id);
+  // }
 }

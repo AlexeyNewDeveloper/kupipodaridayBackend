@@ -49,8 +49,25 @@ export class WishesController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  updateWish(@Request() req, @Param('id') id: string, @Body() updateWishDto: UpdateWishDto) {
-    return this.wishesService.updateOne({ id: +id, owner: req.user }, updateWishDto);
+  async updateWish(@Request() req, @Param('id') id: string, @Body() updateWishDto: UpdateWishDto) {
+    // const wish = await this.wishesService.findOne({
+    //   where: {
+    //     id: +id,
+    //     owner: req.user
+    //   },
+    //   select: {
+    //     offers: true
+    //   }
+    // })
+
+    // if (!wish.offers.length) {
+    //   return this.wishesService.updateOne({ id: +id, owner: req.user }, updateWishDto);
+    // }
+
+    // return null;
+
+    return this.wishesService.updateOne({ id: +id, owner: req.user, offers: [] }, updateWishDto);
+
   }
 
   @UseGuards(JwtAuthGuard)
