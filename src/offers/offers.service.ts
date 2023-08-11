@@ -1,22 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Offer } from './entities/offer.entity';
-import { Repository, FindManyOptions } from 'typeorm';
+import { Injectable } from "@nestjs/common";
+import { CreateOfferDto } from "./dto/create-offer.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Offer } from "./entities/offer.entity";
+import { Repository, FindManyOptions } from "typeorm";
 
 @Injectable()
 export class OffersService {
   constructor(
     @InjectRepository(Offer)
-    private offerRepository: Repository<Offer>,
-  ) { }
+    private offerRepository: Repository<Offer>
+  ) {}
 
   async create(createOfferDto: CreateOfferDto, userId: string): Promise<Offer> {
-
     const { itemId, ...newOffer } = createOfferDto;
-    newOffer['item'] = itemId;
-    newOffer['user'] = userId;
+    newOffer["item"] = itemId;
+    newOffer["user"] = userId;
     return this.offerRepository.save(newOffer);
   }
 

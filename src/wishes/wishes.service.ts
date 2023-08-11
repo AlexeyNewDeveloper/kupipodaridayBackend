@@ -1,18 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { CreateWishDto } from './dto/create-wish.dto';
-import { UpdateWishDto } from './dto/update-wish.dto';
-import { Wish } from './entities/wish.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
-import { FindManyOptions, FindOneOptions, Repository, FindOptionsWhere } from 'typeorm';
-import { ParamsObject } from 'src/services/types';
+import { Injectable } from "@nestjs/common";
+import { CreateWishDto } from "./dto/create-wish.dto";
+import { UpdateWishDto } from "./dto/update-wish.dto";
+import { Wish } from "./entities/wish.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import {
+  FindManyOptions,
+  FindOneOptions,
+  Repository,
+  FindOptionsWhere,
+} from "typeorm";
 
 @Injectable()
 export class WishesService {
   constructor(
     @InjectRepository(Wish)
-    private wishesRepository: Repository<Wish>,
-  ) { }
+    private wishesRepository: Repository<Wish>
+  ) {}
 
   async create(createWishDto: CreateWishDto): Promise<Wish> {
     return this.wishesRepository.save(createWishDto);
@@ -26,7 +29,10 @@ export class WishesService {
     return this.wishesRepository.findOne(params);
   }
 
-  async updateOne(params: FindOptionsWhere<Wish>, updateWishDto: UpdateWishDto) {
+  async updateOne(
+    params: FindOptionsWhere<Wish>,
+    updateWishDto: UpdateWishDto
+  ) {
     return this.wishesRepository.update(params, updateWishDto);
   }
 
@@ -35,20 +41,21 @@ export class WishesService {
   }
 
   async getRaise(amount: number, id: number) {
-    console.log(amount, id)
+    console.log(amount, id);
 
-    const updatedWish = await this.wishesRepository.createQueryBuilder()
+    const updatedWish = await this.wishesRepository
+      .createQueryBuilder()
       .update(Wish)
       .set({
-        raised: () => `raised + ${amount}`
+        raised: () => `raised + ${amount}`,
       })
       .where("id = :id", { id })
-      .execute()
+      .execute();
 
     return updatedWish;
   }
 
   async incrementCopiedField(id: number, amount: number) {
-    return this.wishesRepository.increment({ id }, 'copied', amount)
+    return this.wishesRepository.increment({ id }, "copied", amount);
   }
 }

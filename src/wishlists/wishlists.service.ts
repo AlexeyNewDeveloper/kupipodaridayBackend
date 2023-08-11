@@ -1,22 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { CreateWishlistDto } from './dto/create-wishlist.dto';
-import { UpdateWishlistDto } from './dto/update-wishlist.dto';
-import { Wishlist } from './entities/wishlist.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere, FindOneOptions } from 'typeorm';
-import { FindManyOptions } from 'typeorm';
+import { Injectable } from "@nestjs/common";
+import { CreateWishlistDto } from "./dto/create-wishlist.dto";
+import { UpdateWishlistDto } from "./dto/update-wishlist.dto";
+import { Wishlist } from "./entities/wishlist.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, FindOptionsWhere, FindOneOptions } from "typeorm";
+import { FindManyOptions } from "typeorm";
 
 @Injectable()
 export class WishlistsService {
   constructor(
     @InjectRepository(Wishlist)
-    private wishlistRepository: Repository<Wishlist>,
-  ) { }
+    private wishlistRepository: Repository<Wishlist>
+  ) {}
 
-  async create(createWishlistDto: CreateWishlistDto, userId: string): Promise<Wishlist> {
+  async create(
+    createWishlistDto: CreateWishlistDto,
+    userId: string
+  ): Promise<Wishlist> {
     const { itemsId, ...createWishlistData } = createWishlistDto;
-    createWishlistData['items'] = [...itemsId];
-    createWishlistData['owner'] = userId;
+    createWishlistData["items"] = [...itemsId];
+    createWishlistData["owner"] = userId;
     return this.wishlistRepository.save(createWishlistData);
   }
 
@@ -28,12 +31,14 @@ export class WishlistsService {
     return this.wishlistRepository.findOne(paramsObject);
   }
 
-  async updateOne(paramsObject: FindOptionsWhere<Wishlist>, updateUserDto: UpdateWishlistDto) {
+  async updateOne(
+    paramsObject: FindOptionsWhere<Wishlist>,
+    updateUserDto: UpdateWishlistDto
+  ) {
     return this.wishlistRepository.update(paramsObject, updateUserDto);
   }
 
   async removeOne(paramsObject: FindOptionsWhere<Wishlist>) {
     return this.wishlistRepository.delete(paramsObject);
   }
-
 }

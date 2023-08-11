@@ -1,31 +1,29 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateWishDto } from './create-wish.dto';
-import { IsString, Length, IsUrl, IsNumber, Min } from 'class-validator';
+import { IsString, Length, IsUrl, IsNumber, Min } from "class-validator";
 
 export class UpdateWishDto {
-    @IsString()
-    @Length(1, 250)
-    name: string
+  @IsString()
+  @Length(1, 250)
+  name: string;
 
-    @IsUrl()
-    @IsString()
-    link: string;
+  @IsUrl()
+  @IsString()
+  link: string;
 
-    @IsUrl()
-    @IsString()
-    image: string;
+  @IsUrl()
+  @IsString()
+  image: string;
 
-    @IsNumber()
-    @Min(1)
-    price: number;
+  @IsNumber()
+  @Min(1)
+  price: number;
 
-    @IsString()
-    @Length(1, 1024)
-    description: string
+  @IsString()
+  @Length(1, 1024)
+  description: string;
 
-    @IsNumber()
-    copied?: number;
+  @IsNumber()
+  copied?: number;
 
-    @IsNumber()
-    raised?: number;
+  @IsNumber()
+  raised?: number;
 }

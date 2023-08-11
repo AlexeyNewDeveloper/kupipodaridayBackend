@@ -4,12 +4,12 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-} from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
+} from "@nestjs/common";
+import { HttpAdapterHost } from "@nestjs/core";
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const { httpAdapter } = this.httpAdapterHost;
@@ -22,16 +22,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const exceptionMessage =
-      exception instanceof HttpException
-        ? exception.message
-        : 'Ошибка сервера';
-
+      exception instanceof HttpException ? exception.message : "Ошибка сервера";
 
     const responseBody = {
       statusCode: httpStatus,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
-      message: exceptionMessage
+      message: exceptionMessage,
     };
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);

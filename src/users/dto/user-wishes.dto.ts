@@ -1,44 +1,51 @@
-import { IsString, Length, IsUrl, IsNumber, Min, IsArray, IsDate } from "class-validator";
+import {
+  IsString,
+  Length,
+  IsUrl,
+  IsNumber,
+  Min,
+  IsArray,
+  IsDate,
+} from "class-validator";
 import { Offer } from "src/offers/entities/offer.entity";
-import { User } from "src/users/entities/user.entity";
 
 export class UserWishesDto {
-    @IsNumber()
-    id: number;
+  @IsNumber()
+  id: number;
 
-    @IsDate()
-    createdAt: Date;
+  @IsDate()
+  createdAt: Date;
 
-    @IsDate()
-    updatedAt: Date;
+  @IsDate()
+  updatedAt: Date;
 
-    @IsString()
-    @Length(1, 250)
-    name: string
+  @IsString()
+  @Length(1, 250)
+  name: string;
 
-    @IsUrl()
-    @IsString()
-    link: string;
+  @IsUrl()
+  @IsString()
+  link: string;
 
-    @IsUrl()
-    @IsString()
-    image: string;
+  @IsUrl()
+  @IsString()
+  image: string;
 
-    @IsNumber()
-    @Min(1)
-    price: number;
+  @IsNumber()
+  @Min(1)
+  price: number;
 
-    @IsNumber()
-    @Min(1)
-    raised: number;
+  @IsNumber()
+  @Min(1)
+  raised: number;
 
-    @IsString()
-    @Length(1, 1024)
-    description: string
+  @IsString()
+  @Length(1, 1024)
+  description: string;
 
-    @IsArray()
-    offers: Offer[]
+  @IsArray()
+  offers: Offer[];
 
-    @IsNumber()
-    copied: number;
+  @IsNumber()
+  copied: number;
 }
