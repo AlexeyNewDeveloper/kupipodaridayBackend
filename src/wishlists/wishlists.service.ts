@@ -3,7 +3,7 @@ import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { Wishlist } from './entities/wishlist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere } from 'typeorm';
+import { Repository, FindOptionsWhere, FindOneOptions } from 'typeorm';
 import { FindManyOptions } from 'typeorm';
 
 @Injectable()
@@ -13,16 +13,19 @@ export class WishlistsService {
     private wishlistRepository: Repository<Wishlist>,
   ) { }
 
-  async create(createWishlistDto: CreateWishlistDto): Promise<Wishlist> {
-    return this.wishlistRepository.save(createWishlistDto);
+  async create(createWishlistDto: CreateWishlistDto, userId: string): Promise<Wishlist> {
+    const { itemsId, ...createWishlistData } = createWishlistDto;
+    createWishlistData['items'] = [...itemsId];
+    createWishlistData['owner'] = userId;
+    return this.wishlistRepository.save(createWishlistData);
   }
 
   async findAll(paramsObject: FindManyOptions<Wishlist>): Promise<Wishlist[]> {
     return this.wishlistRepository.find(paramsObject);
   }
 
-  async findOne(id: number) {
-    return this.wishlistRepository.findOneBy({ id });
+  async findOne(paramsObject: FindOneOptions<Wishlist>) {
+    return this.wishlistRepository.findOne(paramsObject);
   }
 
   async updateOne(paramsObject: FindOptionsWhere<Wishlist>, updateUserDto: UpdateWishlistDto) {

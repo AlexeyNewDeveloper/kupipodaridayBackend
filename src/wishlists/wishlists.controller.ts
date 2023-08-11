@@ -4,18 +4,21 @@ import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
+import { WishesService } from 'src/wishes/wishes.service';
+import { In } from 'typeorm';
 
 @Controller('wishlistlists')
 export class WishlistsController {
   constructor(
     private readonly wishlistsService: WishlistsService,
-    private readonly usersService: UsersService,
+    private readonly wishesService: WishesService,
   ) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createWishlistDto: CreateWishlistDto) {
-    return this.wishlistsService.create(createWishlistDto);
+  async create(@Request() req, @Body() createWishlistDto: CreateWishlistDto) {
+    const wishlist = await this.wishlistsService.create(createWishlistDto, req.user.id);
+    return wishlist;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -30,8 +33,23 @@ export class WishlistsController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.wishlistsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+
+    const wishlist = await this.wishlistsService.findOne({
+      where: {
+        id: +id
+      },
+      relations: {
+        owner: true
+      }
+    });
+    const wishesList = await this.wishesService.findAll({
+      where: {
+        id: In(wishlist.items)
+      }
+    })
+    const responseObject = { ...wishlist, items: wishesList };
+    return responseObject;
   }
 
   @UseGuards(JwtAuthGuard)

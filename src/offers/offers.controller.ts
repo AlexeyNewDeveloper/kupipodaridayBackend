@@ -37,7 +37,7 @@ export class OffersController {
 
     if (req.user.id !== wish.owner.id) {
       const offer = await this.offersService.create(createOfferDto, req.user.id);
-      // const updatedWish = await this.wishesService.getRaise(finalAmount, offer['itemId'])
+      const updatedWish = await this.wishesService.getRaise(+createOfferDto.amount, createOfferDto.itemId)
 
       return offer;
     } else {

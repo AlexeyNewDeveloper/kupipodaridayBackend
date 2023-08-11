@@ -35,8 +35,7 @@ export class Wishlist extends BaseEntity {
     @IsArray()
     @Column({
         type: 'simple-array',
-        array: true,
         default: []
     })
-    items: Wish[]
+    items: number[]
 }

@@ -47,6 +47,8 @@ export class WishesController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getWish(@Param('id') id: string) {
+
+
     const wish = await this.wishesService.findOne({
       where: { id: +id },
       relations: {

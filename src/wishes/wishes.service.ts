@@ -35,15 +35,15 @@ export class WishesService {
   }
 
   async getRaise(amount: number, id: number) {
-    const updatedWish = await this.wishesRepository.update({ id }, { price: 5000 })
+    console.log(amount, id)
 
-    // const updatedWish = await this.wishesRepository.createQueryBuilder()
-    //   .update(Wish)
-    //   .set({
-    //     raised: () => `raised + ${amount}`
-    //   })
-    //   .where("id = :id", { id })
-    //   .execute()
+    const updatedWish = await this.wishesRepository.createQueryBuilder()
+      .update(Wish)
+      .set({
+        raised: () => `raised + ${amount}`
+      })
+      .where("id = :id", { id })
+      .execute()
 
     return updatedWish;
   }
