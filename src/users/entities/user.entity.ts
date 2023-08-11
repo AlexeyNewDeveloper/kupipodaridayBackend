@@ -53,18 +53,15 @@ export class User extends BaseEntity {
     password: string;
 
     @IsArray()
-    @Column()
     @OneToMany(() => Wishlist, (wishlist) => wishlist.owner)
     wishlists: Wishlist[];
 
     @OneToMany(() => Wish, (wish) => wish.owner)
     @IsArray()
-    @Column()
     wishes: Wish[];
 
     @OneToMany(() => Offer, (offer) => offer.user)
     @IsArray()
-    @Column()
     offers: Offer[];
 
 

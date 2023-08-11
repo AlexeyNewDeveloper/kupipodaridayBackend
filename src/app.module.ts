@@ -12,11 +12,24 @@ import { Wishlist } from './wishlists/entities/wishlist.entity';
 import { Offer } from './offers/entities/offer.entity';
 import { AuthModule } from './auth/auth.module';
 import { HashModule } from './hash/hash.module';
-import AppDataSource from './data-source'
+import { AuthService } from './auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
+
+
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Wish, Wishlist, Offer], AppDataSource.PostgresDataSource),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'student',
+      password: 'student',
+      database: 'kupipodariday_project',
+      entities: [User, Wish, Wishlist, Offer],
+      synchronize: true,
+      retryAttempts: 3
+    }),
     UsersModule,
     WishesModule,
     WishlistsModule,
@@ -25,7 +38,7 @@ import AppDataSource from './data-source'
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AuthService, JwtService],
 })
 // eslint-disable-next-line prettier/prettier
 export class AppModule { }

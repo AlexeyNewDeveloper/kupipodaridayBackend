@@ -45,12 +45,20 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('me/wishes')
   async getOwnWishes(@Request() req) {
-    return this.usersService.findOne({
-      where: { id: +req.user.id },
-      select: {
-        wishes: true
+    const user = await this.usersService.findOne({
+      where: {
+        id: +req.user.id
       }
     })
+    return this.wishesService.findAll({
+      where: { owner: user }
+    })
+    // return this.usersService.findOne({
+    //   where: { id: +req.user.id },
+    //   select: {
+    //     wishes: true
+    //   }
+    // })
   }
 
   @UseGuards(JwtAuthGuard)

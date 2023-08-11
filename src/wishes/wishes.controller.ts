@@ -19,10 +19,10 @@ export class WishesController {
   findLast() {
     return this.wishesService.findAll({
       order: {
-        id: 'DESC'
+        createdAt: 'DESC'
       },
       skip: 0,
-      take: 20
+      take: 40
     });
   }
 
@@ -31,7 +31,7 @@ export class WishesController {
   findTop() {
     return this.wishesService.findAll({
       order: {
-        id: 'ASC'
+        copied: 'DESC'
       },
       skip: 0,
       take: 20
@@ -89,6 +89,9 @@ export class WishesController {
         description: true
       }
     });
-    return this.wishesService.create(wish);
+    const copiedWish = await this.wishesService.create(wish);
+    this.wishesService.incrementCopiedField(+id, 1)
+    return copiedWish;
+    // this.wishesService.updateOne({ id: +id }, {copied: })
   }
 }

@@ -12,7 +12,6 @@ export class OffersController {
   constructor(
     private readonly offersService: OffersService,
     private readonly wishesService: WishesService,
-    private readonly usersService: UsersService,
   ) { }
 
   @UseGuards(JwtAuthGuard)

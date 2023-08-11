@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, Column } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import {
     IsDate
 } from 'class-validator';
@@ -8,11 +8,11 @@ export class BaseEntity {
     id: number;
 
     @IsDate()
-    @Column()
+    @CreateDateColumn()
     createdAt: Date;
 
     @IsDate()
-    @Column()
+    @UpdateDateColumn()
     updatedAt: Date;
 
 }

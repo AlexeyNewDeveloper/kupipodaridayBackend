@@ -7,7 +7,6 @@ import { IsArray, IsString, IsUrl, Length } from 'class-validator';
 @Entity()
 export class Wishlist extends BaseEntity {
 
-    @Column()
     @ManyToOne(() => User, (user) => user.wishlists)
     owner: User
 
@@ -34,6 +33,10 @@ export class Wishlist extends BaseEntity {
     image: string
 
     @IsArray()
-    @Column()
+    @Column({
+        type: 'simple-array',
+        array: true,
+        default: []
+    })
     items: Wish[]
 }

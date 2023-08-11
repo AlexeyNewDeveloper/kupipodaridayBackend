@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 import { ParamsObject } from 'src/services/types';
+import { FindOneOptions, FindManyOptions } from 'typeorm';
 
 
 @Injectable()
@@ -19,11 +20,11 @@ export class UsersService {
     return this.userRepository.save(createUserDto);
   }
 
-  async findAll(paramsObject: ParamsObject): Promise<UserProfileResponseDto[]> {
+  async findAll(paramsObject: FindManyOptions<User>): Promise<UserProfileResponseDto[]> {
     return this.userRepository.find(paramsObject);
   }
 
-  async findOne(paramsObject: ParamsObject): Promise<User> {
+  async findOne(paramsObject: FindOneOptions<User>): Promise<User> {
     return this.userRepository.findOne(paramsObject);
   }
 

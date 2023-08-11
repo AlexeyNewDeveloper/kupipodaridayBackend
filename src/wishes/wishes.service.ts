@@ -43,4 +43,8 @@ export class WishesService {
       .where("id = :id", { id })
       .execute()
   }
+
+  async incrementCopiedField(id: number, amount: number) {
+    return this.wishesRepository.increment({ id }, 'copied', amount)
+  }
 }

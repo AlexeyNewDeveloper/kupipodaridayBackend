@@ -44,7 +44,6 @@ export class Wish extends BaseEntity {
     raised: number;
 
     @ManyToOne(() => User, (user) => user.wishes)
-    @Column()
     owner: User;
 
     @IsString()
@@ -57,7 +56,6 @@ export class Wish extends BaseEntity {
 
     @ManyToOne(() => Offer, offer => offer.item)
     @IsArray()
-    @Column()
     offers: Offer[]
 
     @IsNumber()
