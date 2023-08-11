@@ -35,13 +35,17 @@ export class WishesService {
   }
 
   async getRaise(amount: number, id: number) {
-    return this.wishesRepository.createQueryBuilder()
-      .update(Wish)
-      .set({
-        raised: () => `raised + ${amount}`
-      })
-      .where("id = :id", { id })
-      .execute()
+    const updatedWish = await this.wishesRepository.update({ id }, { price: 5000 })
+
+    // const updatedWish = await this.wishesRepository.createQueryBuilder()
+    //   .update(Wish)
+    //   .set({
+    //     raised: () => `raised + ${amount}`
+    //   })
+    //   .where("id = :id", { id })
+    //   .execute()
+
+    return updatedWish;
   }
 
   async incrementCopiedField(id: number, amount: number) {

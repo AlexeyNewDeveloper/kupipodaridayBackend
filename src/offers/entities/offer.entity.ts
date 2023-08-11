@@ -6,10 +6,10 @@ import { IsNumber, IsBoolean } from 'class-validator';
 
 @Entity()
 export class Offer extends BaseEntity {
-    @ManyToOne(() => User, (user) => user.wishlists)
+    @ManyToOne(() => User, (user) => user.offers)
     user: User
 
-    @OneToMany(() => Wish, wish => wish.offers)
+    @ManyToOne(() => Wish, wish => wish.offers)
     item: Wish;
 
     @IsNumber()

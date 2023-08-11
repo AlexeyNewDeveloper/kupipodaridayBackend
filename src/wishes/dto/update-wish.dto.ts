@@ -25,4 +25,7 @@ export class UpdateWishDto {
 
     @IsNumber()
     copied?: number;
+
+    @IsNumber()
+    raised?: number;
 }

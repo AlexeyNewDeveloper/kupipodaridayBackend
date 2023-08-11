@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { HashService } from 'src/hash/hash.service';
@@ -15,13 +15,16 @@ export class AuthService {
     ) { }
 
     async validateUser(username: string, password: string): Promise<any> {
-        const user = await this.usersService.findOne({ where: { username } });
-        const isMatchPassword = await this.hashService.compare(password, user.password)
-        if (isMatchPassword) {
-            const { password, ...result } = user;
-            return result;
+        try {
+            const user = await this.usersService.findOne({ where: { username } });
+            const isMatchPassword = await this.hashService.compare(password, user.password)
+            if (isMatchPassword) {
+                const { password, ...result } = user;
+                return result;
+            }
+        } catch {
+            throw new UnauthorizedException('Неправильный логин или пароль')
         }
-        return null;
     }
 
     async login(user: any) {

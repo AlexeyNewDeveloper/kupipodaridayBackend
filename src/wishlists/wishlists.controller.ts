@@ -5,7 +5,7 @@ import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
 
-@Controller('wishlists')
+@Controller('wishlistlists')
 export class WishlistsController {
   constructor(
     private readonly wishlistsService: WishlistsService,
@@ -18,9 +18,14 @@ export class WishlistsController {
     return this.wishlistsService.create(createWishlistDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.wishlistsService.findAll();
+  async findAll(@Request() req) {
+    return this.wishlistsService.findAll({
+      // where: {
+      //   owner: req.user.id
+      // }
+    });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -32,22 +37,12 @@ export class WishlistsController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Request() req, @Param('id') id: string, @Body() updateWishlistDto: UpdateWishlistDto) {
-    const user = await this.usersService.findOne({
-      where: {
-        id: req.user.id
-      }
-    })
-    return this.wishlistsService.updateOne({ id: +id, owner: user }, updateWishlistDto);
+    return this.wishlistsService.updateOne({ id: +id, owner: req.user.id }, updateWishlistDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Request() req, @Param('id') id: string) {
-    const user = await this.usersService.findOne({
-      where: {
-        id: req.user.id
-      }
-    })
-    return this.wishlistsService.removeOne({ id: +id, owner: user });
+    return this.wishlistsService.removeOne({ id: +id, owner: req.user.id });
   }
 }

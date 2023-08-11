@@ -4,6 +4,7 @@ import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { Wishlist } from './entities/wishlist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere } from 'typeorm';
+import { FindManyOptions } from 'typeorm';
 
 @Injectable()
 export class WishlistsService {
@@ -16,8 +17,8 @@ export class WishlistsService {
     return this.wishlistRepository.save(createWishlistDto);
   }
 
-  async findAll(): Promise<Wishlist[]> {
-    return this.wishlistRepository.find();
+  async findAll(paramsObject: FindManyOptions<Wishlist>): Promise<Wishlist[]> {
+    return this.wishlistRepository.find(paramsObject);
   }
 
   async findOne(id: number) {

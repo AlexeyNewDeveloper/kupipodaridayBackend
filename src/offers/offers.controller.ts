@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, BadRequestException } from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
@@ -22,29 +22,37 @@ export class OffersController {
         id: createOfferDto.itemId,
       },
       relations: {
-        owner: true
+        owner: true,
+        offers: {
+          user: true
+        }
       }
     })
 
-    const finalAmount = wish.raised + createOfferDto.amount;
+    const finalAmount = Number(wish.raised) + Number(createOfferDto.amount);
 
-    if (finalAmount > wish.price) {
-      return null
+    if (finalAmount > Number(wish.price)) {
+      throw new BadRequestException('Сумма оффера превышает цену товара.');
     }
 
     if (req.user.id !== wish.owner.id) {
-      const offer = await this.offersService.create(createOfferDto);
-      this.wishesService.getRaise(offer.amount, offer.item.id)
-      return offer;
-    }
+      const offer = await this.offersService.create(createOfferDto, req.user.id);
+      // const updatedWish = await this.wishesService.getRaise(finalAmount, offer['itemId'])
 
-    return null;
+      return offer;
+    } else {
+      throw new BadRequestException('Вы не можете скидываться на свои же подарки');
+    }
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.offersService.findAll();
+  async findAll(@Request() req) {
+    return this.offersService.findAll({
+      where: {
+        user: req.user.id
+      }
+    });
   }
 
   @UseGuards(JwtAuthGuard)

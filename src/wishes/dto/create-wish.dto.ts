@@ -22,4 +22,6 @@ export class CreateWishDto {
     @IsString()
     @Length(1, 1024)
     description: string
+
+    owner?: User;
 }

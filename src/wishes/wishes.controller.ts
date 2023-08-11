@@ -3,15 +3,20 @@ import { WishesService } from './wishes.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { JwtAuthGuard } from 'src/auth/strategies/jwt/jwt-auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('wishes')
 export class WishesController {
-  constructor(private readonly wishesService: WishesService) { }
+  constructor(
+    private readonly wishesService: WishesService,
+    private readonly usersService: UsersService,
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Request() req, @Body() createWishDto: CreateWishDto) {
-    return this.wishesService.create(createWishDto);
+  async create(@Request() req, @Body() createWishDto: CreateWishDto) {
+    const createdWish = await this.wishesService.create({ owner: req.user.id, ...createWishDto });
+    return createdWish;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -41,32 +46,31 @@ export class WishesController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  getWish(@Param('id') id: string) {
-    return this.wishesService.findOne({
+  async getWish(@Param('id') id: string) {
+    const wish = await this.wishesService.findOne({
       where: { id: +id },
+      relations: {
+        owner: true,
+        offers: {
+          user: true
+        }
+      }
     });
+
+    const listOfUsersWithOffers = wish.offers.map(item => {
+      let user = {};
+
+      user = { ...item, name: item.user.username }
+      return user;
+    })
+
+    return { ...wish, offers: listOfUsersWithOffers };
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async updateWish(@Request() req, @Param('id') id: string, @Body() updateWishDto: UpdateWishDto) {
-    // const wish = await this.wishesService.findOne({
-    //   where: {
-    //     id: +id,
-    //     owner: req.user
-    //   },
-    //   select: {
-    //     offers: true
-    //   }
-    // })
-
-    // if (!wish.offers.length) {
-    //   return this.wishesService.updateOne({ id: +id, owner: req.user }, updateWishDto);
-    // }
-
-    // return null;
-
-    return this.wishesService.updateOne({ id: +id, owner: req.user, offers: [] }, updateWishDto);
+    return this.wishesService.updateOne({ id: +id, owner: req.user.id, offers: [] }, updateWishDto);
 
   }
 
@@ -89,7 +93,7 @@ export class WishesController {
         description: true
       }
     });
-    const copiedWish = await this.wishesService.create(wish);
+    const copiedWish = await this.wishesService.create({ owner: req.user.id, ...wish });
     this.wishesService.incrementCopiedField(+id, 1)
     return copiedWish;
     // this.wishesService.updateOne({ id: +id }, {copied: })

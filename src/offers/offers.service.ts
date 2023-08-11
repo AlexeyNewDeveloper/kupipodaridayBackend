@@ -3,7 +3,7 @@ import { CreateOfferDto } from './dto/create-offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Offer } from './entities/offer.entity';
-import { Repository } from 'typeorm';
+import { Repository, FindManyOptions } from 'typeorm';
 
 @Injectable()
 export class OffersService {
@@ -12,12 +12,16 @@ export class OffersService {
     private offerRepository: Repository<Offer>,
   ) { }
 
-  async create(createOfferDto: CreateOfferDto): Promise<Offer> {
-    return this.offerRepository.save(createOfferDto);
+  async create(createOfferDto: CreateOfferDto, userId: string): Promise<Offer> {
+
+    const { itemId, ...newOffer } = createOfferDto;
+    newOffer['item'] = itemId;
+    newOffer['user'] = userId;
+    return this.offerRepository.save(newOffer);
   }
 
-  async findAll(): Promise<Offer[]> {
-    return this.offerRepository.find();
+  async findAll(paramsObject: FindManyOptions<Offer>): Promise<Offer[]> {
+    return this.offerRepository.find(paramsObject);
   }
 
   async findOne(id: number) {

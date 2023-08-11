@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from 'src/base-entities/base-entity';
 import { IsString, IsUrl, Length, IsNumber, IsArray, Min } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
@@ -54,13 +54,14 @@ export class Wish extends BaseEntity {
     })
     description: string
 
-    @ManyToOne(() => Offer, offer => offer.item)
+    @OneToMany(() => Offer, offer => offer.item)
     @IsArray()
     offers: Offer[]
 
     @IsNumber()
     @Column({
         type: "integer",
+        default: 0
     })
     copied: number;
 }

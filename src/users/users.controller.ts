@@ -48,24 +48,22 @@ export class UsersController {
     const user = await this.usersService.findOne({
       where: {
         id: +req.user.id
+      },
+      relations: {
+        wishes: true
+      },
+      select: {
+        wishes: true
       }
     })
-    return this.wishesService.findAll({
-      where: { owner: user }
-    })
-    // return this.usersService.findOne({
-    //   where: { id: +req.user.id },
-    //   select: {
-    //     wishes: true
-    //   }
-    // })
+    return user.wishes;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':username')
-  async findOne(@Param() username: string) {
+  async findOne(@Param() username: { username: string }) {
     return this.usersService.findOne({
-      where: { username },
+      where: username,
       select: {
         id: true,
         username: true,
@@ -79,13 +77,17 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':username/wishes')
-  async getWishes(@Param() username: string) {
-    const user = await this.usersService.findOne({
-      where: { username },
+  async getWishes(@Param() username: { username: string }) {
+    const userWishes = await this.usersService.findOne({
+      where: username,
+      relations: {
+        wishes: true
+      },
+      select: {
+        wishes: true
+      }
     });
-    return this.wishesService.findAll({
-      where: { owner: user }
-    })
+    return userWishes.wishes;
   }
 
   @UseGuards(JwtAuthGuard)
