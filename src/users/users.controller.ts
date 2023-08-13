@@ -16,14 +16,14 @@ import { HashService } from "src/hash/hash.service";
 import { WishesService } from "src/wishes/wishes.service";
 
 @Controller("users")
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly hashService: HashService,
     private readonly wishesService: WishesService
-  ) {}
+  ) { }
 
-  @UseGuards(JwtAuthGuard)
   @Get("me")
   async findOwn(@Request() req) {
     return this.usersService.findOne({
@@ -40,7 +40,6 @@ export class UsersController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch("me")
   async update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
     let hashedPassword: string;
@@ -51,7 +50,6 @@ export class UsersController {
     return this.usersService.updateOne(+req.user.id, updateUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get("me/wishes")
   async getOwnWishes(@Request() req) {
     const user = await this.usersService.findOne({
@@ -68,7 +66,6 @@ export class UsersController {
     return user.wishes;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(":username")
   async findOne(@Param() username: { username: string }) {
     return this.usersService.findOne({
@@ -84,7 +81,6 @@ export class UsersController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(":username/wishes")
   async getWishes(@Param() username: { username: string }) {
     const userWishes = await this.usersService.findOne({
@@ -99,7 +95,7 @@ export class UsersController {
     return userWishes.wishes;
   }
 
-  @UseGuards(JwtAuthGuard)
+
   @Post("find")
   async findMany(@Body() reqBody: FindUserDto) {
     return this.usersService.findAll({
