@@ -17,13 +17,14 @@ import { WishesService } from "src/wishes/wishes.service";
 import { In } from "typeorm";
 
 @Controller("wishlistlists")
+@UseGuards(JwtAuthGuard)
 export class WishlistsController {
   constructor(
     private readonly wishlistsService: WishlistsService,
     private readonly wishesService: WishesService
-  ) {}
+  ) { }
 
-  @UseGuards(JwtAuthGuard)
+
   @Post()
   async create(@Request() req, @Body() createWishlistDto: CreateWishlistDto) {
     const wishlist = await this.wishlistsService.create(
@@ -33,7 +34,6 @@ export class WishlistsController {
     return wishlist;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return this.wishlistsService.findAll({
@@ -43,7 +43,6 @@ export class WishlistsController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(":id")
   async findOne(@Param("id") id: string) {
     const wishlist = await this.wishlistsService.findOne({
@@ -63,7 +62,6 @@ export class WishlistsController {
     return responseObject;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   async update(
     @Request() req,
@@ -76,7 +74,6 @@ export class WishlistsController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async remove(@Request() req, @Param("id") id: string) {
     return this.wishlistsService.removeOne({ id: +id, owner: req.user.id });
