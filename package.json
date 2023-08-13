@@ -1,8 +1,8 @@
 {
   "name": "kupipodariday",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Приложение, которое позволяет создавать хотелки и скидываться деньгами на хотелки других людей.",
+  "author": "Alexey Yanchev",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/mapped-types": "*",

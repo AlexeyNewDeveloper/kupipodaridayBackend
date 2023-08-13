@@ -15,7 +15,7 @@ export class WishesService {
   constructor(
     @InjectRepository(Wish)
     private wishesRepository: Repository<Wish>
-  ) {}
+  ) { }
 
   async create(createWishDto: CreateWishDto): Promise<Wish> {
     return this.wishesRepository.save(createWishDto);
@@ -41,7 +41,6 @@ export class WishesService {
   }
 
   async getRaise(amount: number, id: number) {
-    console.log(amount, id);
 
     const updatedWish = await this.wishesRepository
       .createQueryBuilder()
