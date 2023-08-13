@@ -15,7 +15,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private hashService: HashService
-  ) {}
+  ) { }
 
   async validateUser(username: string, password: string): Promise<any> {
     try {

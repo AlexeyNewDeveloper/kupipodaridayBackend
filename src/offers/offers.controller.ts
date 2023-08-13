@@ -14,13 +14,14 @@ import { JwtAuthGuard } from "src/auth/strategies/jwt/jwt-auth.guard";
 import { WishesService } from "src/wishes/wishes.service";
 
 @Controller("offers")
+@UseGuards(JwtAuthGuard)
 export class OffersController {
   constructor(
     private readonly offersService: OffersService,
     private readonly wishesService: WishesService
-  ) {}
+  ) { }
 
-  @UseGuards(JwtAuthGuard)
+
   @Post()
   async create(@Request() req, @Body() createOfferDto: CreateOfferDto) {
     const wish = await this.wishesService.findOne({
@@ -59,7 +60,6 @@ export class OffersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Request() req) {
     return this.offersService.findAll({
@@ -69,7 +69,6 @@ export class OffersController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.offersService.findOne(+id);
