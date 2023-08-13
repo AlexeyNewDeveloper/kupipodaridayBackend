@@ -36,7 +36,7 @@ import { JwtService } from "@nestjs/jwt";
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService, JwtService],
+  providers: [AppService, JwtService],
 })
 // eslint-disable-next-line prettier/prettier
 export class AppModule { }
