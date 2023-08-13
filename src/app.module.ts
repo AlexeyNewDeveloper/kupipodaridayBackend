@@ -13,28 +13,26 @@ import { Offer } from "./offers/entities/offer.entity";
 import { AuthModule } from "./auth/auth.module";
 import { HashModule } from "./hash/hash.module";
 import { JwtService } from "@nestjs/jwt";
-import { ConfigModule, ConfigService } from '@nestjs/config';
-
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.development.env',
+      envFilePath: ".development.env",
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres' as 'postgres',
-        host: configService.get<string>('DATABASE_HOST'),
-        port: parseInt(configService.get<string>('DATABASE_PORT')),
-        username: configService.get<string>('DATABASE_USER'),
-        password: configService.get<string>('DATABASE_PASS'),
-        database: configService.get<string>('DATABASE_NAME'),
+        type: "postgres" as const,
+        host: configService.get<string>("DATABASE_HOST"),
+        port: parseInt(configService.get<string>("DATABASE_PORT")),
+        username: configService.get<string>("DATABASE_USER"),
+        password: configService.get<string>("DATABASE_PASS"),
+        database: configService.get<string>("DATABASE_NAME"),
         entities: [User, Wish, Wishlist, Offer],
         synchronize: true,
       }),
       inject: [ConfigService],
-
     }),
     UsersModule,
     WishesModule,
@@ -48,7 +46,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 })
 // eslint-disable-next-line prettier/prettier
 export class AppModule { }
-
 
 // @Module({
 //   imports: [

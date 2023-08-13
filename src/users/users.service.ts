@@ -28,8 +28,27 @@ export class UsersService {
     return this.userRepository.findOne(paramsObject);
   }
 
-  async updateOne(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateUserDto);
+  async updateOne(
+    id: number,
+    updateUserDto: UpdateUserDto
+  ): Promise<UserProfileResponseDto> {
+    // const updateResult = await this.userRepository.update(id, updateUserDto);
+
+    const updateResult = await this.userRepository
+      .createQueryBuilder()
+      .update(User, updateUserDto)
+      .where({ id })
+      .returning([
+        "id",
+        "createdAt",
+        "updatedAt",
+        "username",
+        "about",
+        "avatar",
+        "email",
+      ])
+      .execute();
+    return updateResult.raw[0];
   }
 
   async removeOne(id: number) {

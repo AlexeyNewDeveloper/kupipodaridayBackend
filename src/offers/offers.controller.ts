@@ -12,6 +12,7 @@ import { OffersService } from "./offers.service";
 import { CreateOfferDto } from "./dto/create-offer.dto";
 import { JwtAuthGuard } from "src/auth/strategies/jwt/jwt-auth.guard";
 import { WishesService } from "src/wishes/wishes.service";
+import { Offer } from "./entities/offer.entity";
 
 @Controller("offers")
 @UseGuards(JwtAuthGuard)
@@ -19,11 +20,13 @@ export class OffersController {
   constructor(
     private readonly offersService: OffersService,
     private readonly wishesService: WishesService
-  ) { }
-
+  ) {}
 
   @Post()
-  async create(@Request() req, @Body() createOfferDto: CreateOfferDto) {
+  async create(
+    @Request() req,
+    @Body() createOfferDto: CreateOfferDto
+  ): Promise<Offer> {
     const wish = await this.wishesService.findOne({
       where: {
         id: createOfferDto.itemId,
@@ -61,7 +64,7 @@ export class OffersController {
   }
 
   @Get()
-  async findAll(@Request() req) {
+  async findAll(@Request() req): Promise<Offer[]> {
     return this.offersService.findAll({
       where: {
         user: req.user.id,
@@ -70,7 +73,7 @@ export class OffersController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
+  findOne(@Param("id") id: string): Promise<Offer> {
     return this.offersService.findOne(+id);
   }
 }

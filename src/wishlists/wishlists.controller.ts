@@ -14,7 +14,9 @@ import { CreateWishlistDto } from "./dto/create-wishlist.dto";
 import { UpdateWishlistDto } from "./dto/update-wishlist.dto";
 import { JwtAuthGuard } from "../auth/strategies/jwt/jwt-auth.guard";
 import { WishesService } from "src/wishes/wishes.service";
-import { In } from "typeorm";
+import { DeleteResult, In, UpdateResult } from "typeorm";
+import { Wishlist } from "./entities/wishlist.entity";
+import { Wish } from "src/wishes/entities/wish.entity";
 
 @Controller("wishlistlists")
 @UseGuards(JwtAuthGuard)
@@ -22,11 +24,13 @@ export class WishlistsController {
   constructor(
     private readonly wishlistsService: WishlistsService,
     private readonly wishesService: WishesService
-  ) { }
-
+  ) {}
 
   @Post()
-  async create(@Request() req, @Body() createWishlistDto: CreateWishlistDto) {
+  async create(
+    @Request() req,
+    @Body() createWishlistDto: CreateWishlistDto
+  ): Promise<Wishlist> {
     const wishlist = await this.wishlistsService.create(
       createWishlistDto,
       req.user.id
@@ -35,7 +39,7 @@ export class WishlistsController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(): Promise<Wishlist[]> {
     return this.wishlistsService.findAll({
       // where: {
       //   owner: req.user.id
@@ -44,7 +48,9 @@ export class WishlistsController {
   }
 
   @Get(":id")
-  async findOne(@Param("id") id: string) {
+  async findOne(
+    @Param("id") id: string
+  ): Promise<Omit<Wishlist, "items"> & { items: Wish[] }> {
     const wishlist = await this.wishlistsService.findOne({
       where: {
         id: +id,
@@ -67,7 +73,7 @@ export class WishlistsController {
     @Request() req,
     @Param("id") id: string,
     @Body() updateWishlistDto: UpdateWishlistDto
-  ) {
+  ): Promise<UpdateResult> {
     return this.wishlistsService.updateOne(
       { id: +id, owner: req.user.id },
       updateWishlistDto
@@ -75,7 +81,7 @@ export class WishlistsController {
   }
 
   @Delete(":id")
-  async remove(@Request() req, @Param("id") id: string) {
+  async remove(@Request() req, @Param("id") id: string): Promise<DeleteResult> {
     return this.wishlistsService.removeOne({ id: +id, owner: req.user.id });
   }
 }

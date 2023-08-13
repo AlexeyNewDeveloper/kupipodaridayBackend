@@ -23,3 +23,13 @@ export interface ParamsObject {
   skip?: number;
   cache?: boolean;
 }
+
+export interface IJwtStrategyPayload {
+  sub: number | string;
+  username: string;
+}
+
+export interface IJwtStrategyPayloadResponse {
+  id: number | string;
+  username: string;
+}

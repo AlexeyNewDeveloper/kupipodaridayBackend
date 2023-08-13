@@ -8,6 +8,8 @@ import { JwtService } from "@nestjs/jwt";
 import { HashService } from "src/hash/hash.service";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { JWT_SECRET } from "src/utils/constants";
+import { User } from "src/users/entities/user.entity";
+import { SignupUserResponseDto } from "src/users/dto/signup-user-response.dto";
 
 @Injectable()
 export class AuthService {
@@ -15,9 +17,12 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private hashService: HashService
-  ) { }
+  ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
+  async validateUser(
+    username: string,
+    password: string
+  ): Promise<Omit<User, "password">> {
     try {
       const user = await this.usersService.findOne({ where: { username } });
       const isMatchPassword = await this.hashService.compare(
@@ -34,18 +39,24 @@ export class AuthService {
     }
   }
 
-  async login(user: any) {
+  async login(
+    user: Omit<User, "password">
+  ): Promise<Record<"access_token", string>> {
     const payload = { username: user.username, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload, { secret: JWT_SECRET }),
     };
   }
 
-  async register(registerData: CreateUserDto) {
+  async register(registerData: CreateUserDto): Promise<SignupUserResponseDto> {
     const hashedPassword = await this.hashService.hash(registerData.password);
     registerData.password = hashedPassword;
     try {
-      return await this.usersService.create(registerData);
+      const user = await this.usersService.create(registerData);
+      /* eslint-disable @typescript-eslint/no-unused-vars */
+      const { password, offers, wishes, wishlists, ...responseUser } = user;
+
+      return responseUser;
     } catch (error) {
       throw new ConflictException(
         "Не удалось создать запись. Возможно, такой юзер уже существует."

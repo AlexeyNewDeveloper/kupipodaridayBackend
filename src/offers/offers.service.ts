@@ -22,7 +22,7 @@ export class OffersService {
     return this.offerRepository.find(paramsObject);
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Offer> {
     return this.offerRepository.findOneBy({ id });
   }
 

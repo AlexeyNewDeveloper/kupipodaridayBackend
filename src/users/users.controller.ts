@@ -22,7 +22,7 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly hashService: HashService,
     private readonly wishesService: WishesService
-  ) { }
+  ) {}
 
   @Get("me")
   async findOwn(@Request() req) {
@@ -94,7 +94,6 @@ export class UsersController {
     });
     return userWishes.wishes;
   }
-
 
   @Post("find")
   async findMany(@Body() reqBody: FindUserDto) {

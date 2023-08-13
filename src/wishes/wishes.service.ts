@@ -8,6 +8,8 @@ import {
   FindOneOptions,
   Repository,
   FindOptionsWhere,
+  UpdateResult,
+  DeleteResult,
 } from "typeorm";
 
 @Injectable()
@@ -15,7 +17,7 @@ export class WishesService {
   constructor(
     @InjectRepository(Wish)
     private wishesRepository: Repository<Wish>
-  ) { }
+  ) {}
 
   async create(createWishDto: CreateWishDto): Promise<Wish> {
     return this.wishesRepository.save(createWishDto);
@@ -36,12 +38,11 @@ export class WishesService {
     return this.wishesRepository.update(params, updateWishDto);
   }
 
-  async removeOne(params: FindOptionsWhere<Wish>) {
+  async removeOne(params: FindOptionsWhere<Wish>): Promise<DeleteResult> {
     return this.wishesRepository.delete(params);
   }
 
-  async getRaise(amount: number, id: number) {
-
+  async getRaise(amount: number, id: number): Promise<UpdateResult> {
     const updatedWish = await this.wishesRepository
       .createQueryBuilder()
       .update(Wish)
