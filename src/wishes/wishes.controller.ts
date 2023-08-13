@@ -20,7 +20,7 @@ export class WishesController {
   constructor(
     private readonly wishesService: WishesService,
     private readonly usersService: UsersService
-  ) {}
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -32,7 +32,6 @@ export class WishesController {
     return createdWish;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get("last")
   findLast() {
     return this.wishesService.findAll({
@@ -44,7 +43,6 @@ export class WishesController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get("top")
   findTop() {
     return this.wishesService.findAll({
